@@ -5,7 +5,7 @@
  * Description: Plugin for WordPress.
  * Version:     1.0.0
  * Author:      CherryTeam
- * Text Domain: tm-style-swither
+ * Text Domain: tm-style-switcher
  * License:     GPL-3.0+
  * License URI: http://www.gnu.org/licenses/gpl-3.0.txt
  * Domain Path: /languages
@@ -54,11 +54,16 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 			// Set the constants needed by the plugin.
 			$this->constants();
 
+			// Load the functions files.
+			$this->includes();
+
 			// Load the installer core.
 			add_action( 'after_setup_theme', require( trailingslashit( __DIR__ ) . 'cherry-framework/setup.php' ), 0 );
 
 			// Load the core functions/classes required by the rest of the theme.
 			add_action( 'after_setup_theme', array( $this, 'get_core' ), 1 );
+
+			add_action( 'after_setup_theme', array( 'Cherry_Core', 'load_all_modules' ), 2 );
 
 			// Initialization of modules.
 			add_action( 'after_setup_theme', array( $this, 'init' ) );
@@ -74,6 +79,10 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 
 			// Load public-facing JavaScript.
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+
+			//add_action( 'customize_controls_print_scripts', 'CEI_Core::controls_print_scripts' );
+
+			add_action( 'customize_controls_enqueue_scripts', array( $this, 'controls_enqueue_scripts' ) );
 
 			// Register activation and deactivation hook.
 			register_activation_hook( __FILE__, array( $this, 'activation' ) );
@@ -110,6 +119,16 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 		}
 
 		/**
+		 * Loads files from the '/include' folder.
+		 *
+		 * @since 1.0.0
+		 */
+		function includes() {
+			require_once( trailingslashit( TM_STYLE_SWITCHER_DIR ) . 'includes/class-init-export-import.php' );
+			require_once( trailingslashit( TM_STYLE_SWITCHER_DIR ) . 'includes/class-register-customize-controls.php' );
+		}
+
+		/**
 		 * Loads the core functions. These files are needed before loading anything else in the
 		 * theme because they have required functions for use.
 		 *
@@ -143,7 +162,7 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 						'autoload' => false,
 					),
 					'cherry-js-core' => array(
-						'autoload' => true,
+						'autoload' => false,
 					),
 					'cherry-ui-elements' => array(
 						'autoload' => false,
@@ -163,6 +182,7 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 		 * @since 1.0.0
 		 */
 		public function init() {
+			$this->get_core()->init_module( 'cherry-js-core' );
 		}
 
 		/**
@@ -171,7 +191,7 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 		 * @since 1.0.0
 		 */
 		public function admin_init() {
-			require_once( TM_STYLE_SWITCHER_DIR . 'includes/admin/class.plugin-admin.php' );
+
 		}
 
 		/**
@@ -180,7 +200,7 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 		 * @since 1.0.0
 		 */
 		public function lang() {
-			load_plugin_textdomain( 'tm-style-swither', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+			load_plugin_textdomain( 'tm-style-switcher', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 		}
 
 		/**
@@ -196,6 +216,35 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 		 * @since 1.0.0
 		 */
 		public function enqueue_scripts() {}
+
+
+		/**
+		 * Enqueues scripts for the control.
+		 *
+		 * @since 0.1
+		 * @return void
+		 */
+		public function controls_enqueue_scripts() {
+
+			// Register
+			wp_register_style( 'tm-style-swither-css', TM_STYLE_SWITCHER_URI . '/assets/css/styles.css', array(), TM_STYLE_SWITCHER_VERSION );
+			wp_register_script( 'tm-style-swither-js', TM_STYLE_SWITCHER_URI . '/assets/js/customizer.js', array( 'jquery', 'cherry-js-core' ), TM_STYLE_SWITCHER_VERSION, true );
+
+			// Localize
+			wp_localize_script( 'tm-style-swither-js', 'TMSSl10n', array(
+				'emptyImport' => __( 'Please choose a file to import.', 'tm-style-switcher' ),
+			));
+
+			// Config
+			wp_localize_script( 'tm-style-swither-js', 'TMSSConfig', array(
+				'customizerURL' => admin_url( 'customize.php' ),
+				'exportNonce'   => wp_create_nonce( 'tmss-exporting' ),
+			));
+
+			// Enqueue
+			wp_enqueue_style( 'tm-style-swither-css' );
+			wp_enqueue_script( 'tm-style-swither-js' );
+		}
 
 		/**
 		 * On plugin activation.

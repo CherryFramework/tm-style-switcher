@@ -1,0 +1,39 @@
+@import "ui-kit/variables";
+@import "ui-kit/mixins";
+
+.tmss-control-wrapper{
+    border: 2px solid $grey_color_2;
+    background: $grey_color_3;
+    border-radius: $border_radius_large;
+    background-color: #fff;
+    .tmss-customize-control{
+        padding: 20px 30px;
+        border-bottom: 1px solid $grey_color_2;
+    }
+    .button{
+        @include button_base();
+        @include button_success();
+        height: auto;
+    }
+}
+
+.tmss-form {
+    position: absolute;
+    left: -99999px;
+}
+.tmss-import-file {
+    width: 100%;
+    margin: 10px 0;
+    font-size: 12px;
+}
+.tmss-import-images {
+    display: block;
+    margin-bottom: 10px;
+}
+.tmss-uploading {
+    background: #eeeeee;
+    display: none;
+    margin: 10px 0;
+    padding: 10px;
+    font-size: 12px;
+}
