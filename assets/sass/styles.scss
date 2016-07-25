@@ -2,38 +2,116 @@
 @import "ui-kit/mixins";
 
 .tmss-control-wrapper{
-    border: 2px solid $grey_color_2;
-    background: $grey_color_3;
-    border-radius: $border_radius_large;
-    background-color: #fff;
-    .tmss-customize-control{
-        padding: 20px 30px;
-        border-bottom: 1px solid $grey_color_2;
-    }
-    .button{
-        @include button_base();
-        @include button_success();
-        height: auto;
-    }
+	border: 2px solid $grey_color_2;
+	background: $grey_color_3;
+	border-radius: $border_radius_large;
+	background-color: #fff;
+	.tmss-customize-control{
+		padding: 20px 30px;
+		border-bottom: 1px solid $grey_color_2;
+		position: relative;
+			.tmss-customize-notice-container{
+				position: relative;
+			}
+	}
+	.button{
+		@include button_base();
+		@include button_success();
+		height: auto;
+	}
 }
 
 .tmss-form {
-    position: absolute;
-    left: -99999px;
+	position: absolute;
+	left: -99999px;
 }
 .tmss-import-file {
-    width: 100%;
-    margin: 10px 0;
-    font-size: 12px;
+	width: 100%;
+	margin: 10px 0;
+	font-size: 12px;
 }
 .tmss-import-images {
-    display: block;
-    margin-bottom: 10px;
+	display: block;
+	margin-bottom: 10px;
 }
-.tmss-uploading {
-    background: #eeeeee;
-    display: none;
-    margin: 10px 0;
-    padding: 10px;
-    font-size: 12px;
+
+.notice-box{
+	display: none;
+	background: transparent;
+	position: relative;
+	box-sizing: border-box;
+	padding: 5px 5px 5px 35px;
+	margin-top: 10px;
+	border-radius: 2px;
+	span.dashicons{
+		position: absolute;
+		top: 5px;
+		left: 10px;
+		transform: rotate(180deg) scale(0);
+		-webkit-font-smoothing: none;
+		&:before{
+			-webkit-font-smoothing: none;
+			position: absolute;
+			font-size: 25px;
+			left: -2px;
+			top: -2px;
+		}
+	}
+	.inner-text{
+		color: #000;
+		overflow: hidden;
+			span{
+				position: relative;
+				display: block;
+				transform: translateX(-100%);
+			}
+	}
+	&.show-state{
+		span.dashicons{
+			transform: rotate(0deg) scale(1);
+			transition: all 500ms cubic-bezier(.22,.82,.44,.95);
+		}
+		.inner-text{
+			span{
+				transform: translateX(0);
+				transition: all 300ms cubic-bezier(0.1, 0.67, 0.26, 1) 300ms;
+			}
+		}
+	}
+	&.success-notice{
+		background-color: #ecf9f0;
+		span.dashicons{
+			color: #48c569;
+			&:before{
+				content: "\f147";
+			}
+		}
+		.inner-text{
+			color: #48c569;
+		}
+	}
+	&.info-notice{
+		background-color: #fef6ea;
+		span.dashicons{
+			color: #faa730;
+			&:before{
+				content: "\f348";
+			}
+		}
+		.inner-text{
+			color: #faa730;
+		}
+	}
+	&.error-notice{
+		background-color: #fcecec;
+		span.dashicons{
+			color: #e54343;
+			&:before{
+				content: "\f153";
+			}
+		}
+		.inner-text{
+			color: #e54343;
+		}
+	}
 }

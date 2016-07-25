@@ -87,6 +87,10 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 			// Register activation and deactivation hook.
 			register_activation_hook( __FILE__, array( $this, 'activation' ) );
 			register_deactivation_hook( __FILE__, array( $this, 'deactivation' ) );
+
+			// Switch theme
+			add_action( 'after_switch_theme', array( $this, 'switch_theme' ) );
+
 		}
 
 		/**
@@ -102,6 +106,13 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 			 * @since 1.0.0
 			 */
 			define( 'TM_STYLE_SWITCHER_VERSION', '1.0.0' );
+
+			/**
+			 * Set the name of the plugin.
+			 *
+			 * @since 1.0.0
+			 */
+			define( 'TM_STYLE_SWITCHER_NAME', 'tm_style_switcher' );
 
 			/**
 			 * Set constant path to the plugin directory.
@@ -125,6 +136,7 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 		 */
 		function includes() {
 			require_once( trailingslashit( TM_STYLE_SWITCHER_DIR ) . 'includes/class-init-export-import.php' );
+			require_once( trailingslashit( TM_STYLE_SWITCHER_DIR ) . 'includes/class-init-style-switcher.php' );
 			require_once( trailingslashit( TM_STYLE_SWITCHER_DIR ) . 'includes/class-register-customize-controls.php' );
 		}
 
@@ -228,15 +240,17 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 
 			// Register
 			wp_register_style( 'tm-style-swither-css', TM_STYLE_SWITCHER_URI . '/assets/css/styles.css', array(), TM_STYLE_SWITCHER_VERSION );
-			wp_register_script( 'tm-style-swither-js', TM_STYLE_SWITCHER_URI . '/assets/js/customizer.js', array( 'jquery', 'cherry-js-core' ), TM_STYLE_SWITCHER_VERSION, true );
+			wp_register_script( 'tm-style-swither-js', TM_STYLE_SWITCHER_URI . '/assets/js/tm-style-switcher-script.js', array( 'jquery', 'cherry-js-core' ), TM_STYLE_SWITCHER_VERSION, true );
 
 			// Localize
-			wp_localize_script( 'tm-style-swither-js', 'TMSSl10n', array(
-				'emptyImport' => __( 'Please choose a file to import.', 'tm-style-switcher' ),
+			wp_localize_script( 'tm-style-swither-js', 'tmssMessages', array(
+				'emptyImportFile' => __( 'Please choose a file to import', 'tm-style-switcher' ),
+				'willBeRestored'  => __( 'To apply the changes to the page will be reloaded', 'tm-style-switcher' ),
+				'downloadStarted' => __( 'File download started...', 'tm-style-switcher' ),
 			));
 
 			// Config
-			wp_localize_script( 'tm-style-swither-js', 'TMSSConfig', array(
+			wp_localize_script( 'tm-style-swither-js', 'tmssConfig', array(
 				'customizerURL' => admin_url( 'customize.php' ),
 				'exportNonce'   => wp_create_nonce( 'tmss-exporting' ),
 			));
@@ -247,11 +261,48 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 		}
 
 		/**
+		 * Get option field for default settings data
+		 *
+		 * @param  string $theme Theme name
+		 * @return string
+		 */
+		public function get_default_option_field_name( $theme ) {
+			return TM_STYLE_SWITCHER_NAME . '_' . $theme . '_defaults';
+		}
+
+		/**
+		 * Create default settings
+		 *
+		 * @since 1.0.0
+		 * @return void
+		 */
+		public function create_default_settings() {
+			$theme = get_stylesheet();
+
+			$option_field_name = $this->get_default_option_field_name( $theme );
+
+			if ( false === get_option( $option_field_name ) ) {
+
+				$mods     = get_theme_mods();
+				$default_data     = array(
+					'theme'    => $theme,
+					'mods'     => $mods ? $mods : array(),
+				);
+
+				update_option( $option_field_name, $default_data );
+			}
+		}
+
+		/**
 		 * On plugin activation.
 		 *
 		 * @since 1.0.0
 		 */
-		public function activation() {}
+		public function activation() {
+
+			// Create default settings
+			$this->create_default_settings();
+		}
 
 		/**
 		 * On plugin deactivation.
@@ -259,6 +310,17 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 		 * @since 1.0.0
 		 */
 		public function deactivation() {}
+
+		/**
+		 * On switch theme
+		 *
+		 * @since 1.0.0
+		 */
+		public function switch_theme() {
+
+			// Create default settings
+			$this->create_default_settings();
+		}
 
 		/**
 		 * Returns the instance.

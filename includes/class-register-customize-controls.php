@@ -48,15 +48,15 @@ if ( ! class_exists( 'TMSS_register_customize_control' ) ) {
 		public function register( $wp_customize ) {
 
 			// Add the export/import section.
-			$wp_customize->add_section( 'tmss-section', array(
+			$wp_customize->add_section( 'tmss-export-import-section', array(
 				'title'    => __( 'Export/Import', 'tm-style-switcher' ),
-				'priority' => 10000000
+				'priority' => 9999
 			));
 
 			// Add the export/import setting.
-			$wp_customize->add_setting( 'tmss-setting', array(
+			$wp_customize->add_setting( 'tmss-export-import-setting', array(
 				'default' => '',
-				'type'    => 'none'
+				'type'    => 'export_import'
 			));
 
 			require_once( trailingslashit( TM_STYLE_SWITCHER_DIR ) . 'includes/class-export-import-control.php' );
@@ -64,13 +64,37 @@ if ( ! class_exists( 'TMSS_register_customize_control' ) ) {
 			// Add the export/import control.
 			$wp_customize->add_control( new TMSS_Export_Import_Control(
 				$wp_customize,
-				'tmss-setting',
+				'tmss-export-import-setting',
 				array(
-					'section'	=> 'tmss-section',
+					'section'	=> 'tmss-export-import-section',
 					'priority'	=> 1
 				)
 			));
 
+
+			// Add the Style Switcher section.
+			$wp_customize->add_section( 'tm-style-switcher-section', array(
+				'title'    => __( 'TM Style Switcher', 'tm-style-switcher' ),
+				'priority' => 10000
+			));
+
+			// Add the Style Switche setting.
+			$wp_customize->add_setting( 'tm-style-switcher-setting', array(
+				'default' => '',
+				'type'    => 'radio_image'
+			));
+
+			require_once( trailingslashit( TM_STYLE_SWITCHER_DIR ) . 'includes/class-radio-image-control.php' );
+
+
+			$wp_customize->add_control( new TMSS_Radio_Image_Control(
+				$wp_customize,
+				'tm-style-switcher-setting',
+				array(
+					'section'	=> 'tm-style-switcher-section',
+					'priority'	=> 1
+				)
+			));
 		}
 
 		/**

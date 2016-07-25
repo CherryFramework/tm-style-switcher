@@ -23,21 +23,6 @@ if ( ! class_exists( 'TMSS_init_export_import' ) ) {
 	class TMSS_init_export_import {
 
 		/**
-		 * An array of core options that shouldn't be imported.
-		 *
-		 * @since 1.0.0
-		 * @access private
-		 * @var array $base_options
-		 */
-		private $base_options = array(
-			'blogname',
-			'blogdescription',
-			'show_on_front',
-			'page_on_front',
-			'page_for_posts',
-		);
-
-		/**
 		 * A reference to an instance of this class.
 		 *
 		 * @since 1.0.0
@@ -53,6 +38,8 @@ if ( ! class_exists( 'TMSS_init_export_import' ) ) {
 			add_action( 'customize_register', array( $this, 'init' ), 10 );
 
 			add_action( 'wp_ajax_tmss_import_settings', array( $this, 'import_settings' ) );
+
+			add_action( 'wp_ajax_tmss_restore_defaults', array( $this, 'restore_defaults' ) );
 		}
 
 		/**
@@ -69,13 +56,6 @@ if ( ! class_exists( 'TMSS_init_export_import' ) ) {
 					$this->export_settings( $wp_customize );
 				}
 			}
-
-			if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
-
-				// Load the export/import option class.
-				require_once TM_STYLE_SWITCHER_DIR . 'includes/class-update-option.php';
-			}
-
 		}
 
 		/**
@@ -91,52 +71,12 @@ if ( ! class_exists( 'TMSS_init_export_import' ) ) {
 			}
 
 			$theme		= get_stylesheet();
-			$template	= get_template();
 			$charset	= get_option( 'blog_charset' );
 			$mods		= get_theme_mods();
 			$data		= array(
-				'template' => $template,
-				'mods'     => $mods ? $mods : array(),
-				'options'  => array()
+				'theme' => $theme,
+				'mods'  => $mods ? $mods : array(),
 			);
-
-			// Get options from the Customizer API.
-			$settings = $wp_customize->settings();
-
-			foreach ( $settings as $key => $setting ) {
-
-				if ( 'option' == $setting->type ) {
-
-					// Don't save widget data.
-					if ( stristr( $key, 'widget_' ) ) {
-						continue;
-					}
-
-					// Don't save sidebar data.
-					if ( stristr( $key, 'sidebars_' ) ) {
-						continue;
-					}
-
-					// Don't save core options.
-					if ( in_array( $key, $this->base_options ) ) {
-						continue;
-					}
-
-					$data['options'][ $key ] = $setting->value();
-				}
-			}
-
-			// Plugin developers can specify additional option keys to export.
-			$option_keys = apply_filters( 'tmss_export_option_keys', array() );
-
-			foreach ( $option_keys as $option_key ) {
-
-				$option_value = get_option( $option_key );
-
-				if ( $option_value ) {
-					$data['options'][ $option_key ] = $option_value;
-				}
-			}
 
 			// Set the download headers.
 			header( 'Content-disposition: attachment; filename=' . $theme . '-' . gmdate( "d-m-Y-H:i:s" ) . '-export.json' );
@@ -152,122 +92,31 @@ if ( ! class_exists( 'TMSS_init_export_import' ) ) {
 		}
 
 		/**
-		 * Imports uploaded mods and calls WordPress core customize_save actions so
-		 * themes that hook into them can act before mods are saved to the database.
-		 *
-		 * @since 0.1
-		 * @since 0.3 Added $wp_customize param and importing of options.
-		 * @access private
-		 * @param object $wp_customize An instance of WP_Customize_Manager.
-		 * @return void
-		 */
-/*		public function import_settings( $wp_customize ) {
-
-
-			// Make sure we have a valid nonce.
-			if ( ! wp_verify_nonce( $_REQUEST['tmss-import'], 'tmss-importing' ) ) {
-				return;
-			}
-
-			// Make sure WordPress upload support is loaded.
-			if ( ! function_exists( 'wp_handle_upload' ) ) {
-				require_once( ABSPATH . 'wp-admin/includes/file.php' );
-			}
-
-			// Load the export/import option class.
-			require_once TM_STYLE_SWITCHER_DIR . 'includes/class-update-option.php';
-
-			// Setup global vars.
-			global $wp_customize;
-			global $tmss_error;
-
-			// Setup internal vars.
-			$tmss_error = false;
-			$template  = get_template();
-			$overrides = array( 'test_form' => FALSE, 'mimes' => array('json' => 'text/json') );
-			$file      = wp_handle_upload( $_FILES['tmss-import-file'], $overrides );
-
-			// Make sure we have an uploaded file.
-			if ( isset( $file['error'] ) ) {
-				$tmss_error = $file['error'];
-				return;
-			}
-
-			if ( ! file_exists( $file['file'] ) ) {
-				$tmss_error = esc_html__( 'Error importing settings! Please try again.', 'tm-style-switcher' );
-				return;
-			}
-
-			// Get the upload data.
-			$raw  = file_get_contents( $file['file'] );
-			$data = json_decode( $raw, true );
-
-			// Remove the uploaded file.
-			unlink( $file['file'] );
-
-			// Data checks.
-			if ( 'array' != gettype( $data ) ) {
-				$tmss_error = esc_html__( 'Error importing settings! Please check that you uploaded a customizer export file.', 'tm-style-switcher' );
-				return;
-			}
-
-			if ( ! isset( $data['template'] ) || ! isset( $data['mods'] ) ) {
-				$tmss_error = esc_html__( 'Error importing settings! Please check that you uploaded a customizer export file.', 'tm-style-switcher' );
-				return;
-			}
-			if ( $data['template'] != $template ) {
-				$tmss_error = esc_html__( 'Error importing settings! The settings you uploaded are not for the current theme.', 'tm-style-switcher' );
-				return;
-			}
-
-
-			// Import images.
-			if ( isset( $_REQUEST['tmss-import-images'] ) ) {
-				$data['mods'] = $this->import_images( $data['mods'] );
-			}
-
-
-			// Import custom options.
-			if ( isset( $data['options'] ) ) {
-
-				foreach ( $data['options'] as $option_key => $option_value ) {
-
-					$option = new TM_SS_Update_Option( $wp_customize, $option_key, array(
-						'default'		=> '',
-						'type'			=> 'option',
-						'capability'	=> 'edit_theme_options'
-					) );
-
-					$option->import( $option_value );
-				}
-			}
-
-			// Call the customize_save action.
-			do_action( 'customize_save', $wp_customize );
-
-			// Loop through the mods.
-			foreach ( $data['mods'] as $key => $val ) {
-
-				// Call the customize_save_ dynamic action.
-				do_action( 'customize_save_' . $key, $wp_customize );
-
-				// Save the mod.
-				set_theme_mod( $key, $val );
-			}
-
-			// Call the customize_save_after action.
-			do_action( 'customize_save_after', $wp_customize );
-		}*/
-
-
-		/**
 		 * Ajax import options
 		 *
 		 * @since 4.0.0
 		 */
 		function import_settings() {
 
-			$validate = check_ajax_referer( 'tmss_import_settings', 'nonce', false );
+			if ( ! current_user_can( 'manage_options' ) ) {
+				wp_send_json(
+					array(
+						'type'    => 'error',
+						'message' => esc_html__( 'You don\'t have permission to do this', 'tm-style-switcher' ),
+					)
+				);
+			}
+
+			$validate = wp_verify_nonce( $_POST[ 'nonce' ], 'cherry_ajax_nonce' );
+
+			if ( ! $validate ) {
+				wp_send_json(
+					array(
+						'type'    => 'error',
+						'message' => esc_html__( 'You don\'t have permission to do this', 'tm-style-switcher' ),
+					)
+				);
+			}
 
 			// Make sure WordPress upload support is loaded.
 			if ( ! function_exists( 'wp_handle_upload' ) ) {
@@ -278,7 +127,7 @@ if ( ! class_exists( 'TMSS_init_export_import' ) ) {
 			global $wp_customize;
 
 			// Setup internal vars.
-			$template  = get_template();
+			$theme     = get_stylesheet();
 			$overrides = array( 'test_form' => FALSE, 'mimes' => array('json' => 'text/json') );
 			$file      = wp_handle_upload( $_FILES['tmss-import-file'], $overrides );
 
@@ -287,7 +136,7 @@ if ( ! class_exists( 'TMSS_init_export_import' ) ) {
 				wp_send_json(
 					array(
 						'type'    => 'error',
-						'message' => esc_html__( 'Make sure we have an uploaded file.', 'tm-style-switcher' ),
+						'message' => esc_html__( 'Make sure we have an uploaded file', 'tm-style-switcher' ),
 					)
 				);
 
@@ -298,7 +147,7 @@ if ( ! class_exists( 'TMSS_init_export_import' ) ) {
 				wp_send_json(
 					array(
 						'type'    => 'error',
-						'message' => esc_html__( 'Error importing settings! Please try again.', 'tm-style-switcher' ),
+						'message' => esc_html__( 'Error importing settings! Please try again', 'tm-style-switcher' ),
 					)
 				);
 			}
@@ -320,7 +169,7 @@ if ( ! class_exists( 'TMSS_init_export_import' ) ) {
 				);
 			}
 
-			if ( ! isset( $data['template'] ) || ! isset( $data['mods'] ) ) {
+			if ( ! isset( $data['theme'] ) || ! isset( $data['mods'] ) ) {
 				wp_send_json(
 					array(
 						'type'    => 'error',
@@ -329,7 +178,7 @@ if ( ! class_exists( 'TMSS_init_export_import' ) ) {
 				);
 			}
 
-			if ( $data['template'] != $template ) {
+			if ( $data['theme'] != $theme ) {
 				wp_send_json(
 					array(
 						'type'    => 'error',
@@ -346,22 +195,6 @@ if ( ! class_exists( 'TMSS_init_export_import' ) ) {
 			}
 
 
-			// Import custom options.
-			if ( isset( $data['options'] ) ) {
-
-				foreach ( $data['options'] as $option_key => $option_value ) {
-
-
-					/*$option = new TM_SS_Update_Option( $wp_customize, $option_key, array(
-						'default'		=> '',
-						'type'			=> 'option',
-						'capability'	=> 'edit_theme_options'
-					) );
-
-					$option->import( $option_value );*/
-				}
-			}
-
 			// Loop through the mods.
 			foreach ( $data['mods'] as $key => $value ) {
 
@@ -373,6 +206,62 @@ if ( ! class_exists( 'TMSS_init_export_import' ) ) {
 				array(
 					'type' => 'success',
 					'message' => esc_html__( 'Settings has been imported', 'tm-style-switcher' ),
+				)
+			);
+		}
+
+		/**
+		 * Function for restoring to default theme settings
+		 *
+		 * @return void
+		 */
+		public function restore_defaults( ) {
+
+			if ( ! current_user_can( 'manage_options' ) ) {
+				wp_send_json(
+					array(
+						'type'    => 'error',
+						'message' => esc_html__( 'You don\'t have permission to do this', 'tm-style-switcher' ),
+					)
+				);
+			}
+
+			$validate = wp_verify_nonce( $_POST[ 'nonce' ], 'cherry_ajax_nonce' );
+
+			if ( ! $validate ) {
+				wp_send_json(
+					array(
+						'type'    => 'error',
+						'message' => esc_html__( 'You don\'t have permission to do this', 'tm-style-switcher' ),
+					)
+				);
+			}
+
+			$theme = get_stylesheet();
+			$option_name = tm_style_switcher()->get_default_option_field_name( $theme );
+
+			$data = get_option( $option_name );
+
+			if ( ! $data ) {
+				wp_send_json(
+					array(
+						'type'    => 'error',
+						'message' => esc_html__( 'The default setting is not found', 'tm-style-switcher' ),
+					)
+				);
+			}
+
+			// Loop through the mods.
+			foreach ( $data['mods'] as $key => $value ) {
+
+				// Save the mod.
+				set_theme_mod( $key, $value );
+			}
+
+			wp_send_json(
+				array(
+					'type'    => 'success',
+					'message' => esc_html__( 'Settings has been restored', 'tm-style-switcher' ),
 				)
 			);
 		}
