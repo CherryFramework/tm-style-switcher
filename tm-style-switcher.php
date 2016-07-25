@@ -30,6 +30,14 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 	class Tm_Style_Switcher {
 
 		/**
+		 * Presets list
+		 *
+		 * @since 1.0.0
+		 * @var   array
+		 */
+		public $preset_list = array();
+
+		/**
 		 * A reference to an instance of this class.
 		 *
 		 * @since 1.0.0
@@ -291,6 +299,37 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 
 				update_option( $option_field_name, $default_data );
 			}
+		}
+
+		/**
+		 * Register new preset
+		 *
+		 * @param  string $id        Preset id
+		 * @param  string $label     Preset label
+		 * @param  string $image_url Preset image
+		 * @param  string $json_path Preset settings
+		 *
+		 * @since 1.0.0
+		 * @return void
+		 */
+		public function tmss_register_preset( $id = '', $label = '', $image_url = '', $json_path = '' ) {
+			if ( array_key_exists( $id, $this->preset_list ) ) {
+				return false;
+			}
+
+			if ( ! file_exists( $json_path ) ) {
+				return false;
+			}
+
+			if ( empty( $image_url ) ) {
+				$image_url = trailingslashit( plugin_dir_url( __FILE__ ) ) . '/assets/images/inherit.svg';
+			}
+
+			$this->preset_list[ $id ] = array(
+				'label'     => $label,
+				'image_url' => $image_url,
+				'json_path' => $json_path,
+			);
 		}
 
 		/**

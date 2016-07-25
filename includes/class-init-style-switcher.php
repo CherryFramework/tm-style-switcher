@@ -35,7 +35,8 @@ if ( ! class_exists( 'TM_init_style_switcher' ) ) {
 		 */
 		public function __construct() {
 
-			add_action( 'customize_register', array( $this, 'init' ), 10 );
+			add_action( 'customize_register', array( $this, 'init' ) );
+
 		}
 
 		/**

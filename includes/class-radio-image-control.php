@@ -60,6 +60,19 @@ if ( class_exists( 'WP_Customize_Control' ) ) {
 				array( 'ui_elements' => array( 'radio' ) )
 			);
 
+			var_dump( tm_style_switcher() );
+			var_dump( tm_style_switcher()->preset_list );
+
+			$options = array();
+
+			if ( ! empty( tm_style_switcher()->preset_list ) ) {
+				foreach ( tm_style_switcher()->preset_list as $key => $value) {
+				# code...
+				}
+			}
+
+			//$options
+
 			$args = array(
 				'id'        => $this->id,
 				'name'      => $this->id,
