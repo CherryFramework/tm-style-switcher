@@ -322,7 +322,7 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 			}
 
 			if ( empty( $image_url ) ) {
-				$image_url = trailingslashit( plugin_dir_url( __FILE__ ) ) . '/assets/images/inherit.svg';
+				$image_url = $this->get_inherit_image();
 			}
 
 			$this->preset_list[ $id ] = array(
@@ -330,6 +330,15 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 				'image_url' => $image_url,
 				'json_path' => $json_path,
 			);
+		}
+
+		/**
+		 * Get inherit image for preset preview.
+		 *
+		 * @since 1.0.0
+		 */
+		public function get_inherit_image() {
+			return trailingslashit( plugin_dir_url( __FILE__ ) ) . '/assets/images/inherit.svg';
 		}
 
 		/**

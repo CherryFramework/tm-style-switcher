@@ -30,7 +30,7 @@ if ( class_exists( 'WP_Customize_Control' ) ) {
 		public function render_content() {
 			?>
 			<div class="tmss-control-wrapper">
-				<div class="tmss-customize-control">
+				<div class="tmss-customize-control tmss-presets-list">
 					<span class="customize-control-title">
 						<?php echo esc_html__( 'Style Presets', 'tm-style-switcher' ); ?>
 					</span>
@@ -60,9 +60,12 @@ if ( class_exists( 'WP_Customize_Control' ) ) {
 				array( 'ui_elements' => array( 'radio' ) )
 			);
 
-			var_dump( tm_style_switcher()->preset_list );
-			
-			$options = array();
+			$options = array(
+				'defaut_preset' => array(
+					'label'   => esc_html__( 'Defult', 'tm-style-switcher' ),
+					'img_src' => tm_style_switcher()->get_inherit_image(),
+				),
+			);
 
 			if ( ! empty( tm_style_switcher()->preset_list ) ) {
 				foreach ( tm_style_switcher()->preset_list as $preset_id => $preset_data ) {

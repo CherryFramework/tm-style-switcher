@@ -80,8 +80,9 @@ if ( ! class_exists( 'TMSS_register_customize_control' ) ) {
 
 			// Add the Style Switche setting.
 			$wp_customize->add_setting( 'tm-style-switcher-setting', array(
-				'default' => '',
-				'type'    => 'radio_image'
+				'default'   => 'defaut_preset',
+				'type'      => 'radio_image',
+				'transport' => 'postMessage',
 			));
 
 			require_once( trailingslashit( TM_STYLE_SWITCHER_DIR ) . 'includes/class-radio-image-control.php' );

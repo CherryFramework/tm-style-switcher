@@ -8,10 +8,10 @@
 		},
 
 		constructor: function () {
-			console.log(this);
 			$( '#customize-theme-controls' ).on( 'click', '.tmss-export-button', this.exportSettings.bind( this ) );
 			$( '#customize-theme-controls' ).on( 'click', '.tmss-import-button', this.ajaxImportSettings.bind( this ) );
 			$( '#customize-theme-controls' ).on( 'click', '.tmss-restore-settings-button', this.ajaxRestoreDefaults.bind( this ) );
+			$( '.tmss-presets-list' ).on( 'click', '.cherry-radio-input ', this.ajaxPresetSwitch.bind( this ) );
 		},
 
 		exportSettings: function() {
@@ -87,6 +87,36 @@
 						window.location.reload();
 					}, 2000 );
 				}
+			});
+		},
+
+		ajaxPresetSwitch: function() {
+			var self           = this,
+				target         = event.target,
+				nonce          = cherry_ajax,
+				formData       = new FormData();
+
+			formData.append( 'action', 'tmss_import_settingss' );
+			formData.append( 'nonce', nonce );
+
+			$.ajax({
+				type: 'POST',
+				url: ajaxurl,
+				dataType: 'json',
+				data: formData,
+				contentType: false,
+				processData: false,
+				cache: false,
+				beforeSend: function( jqXHR ) {
+
+				},
+				success: function(response){
+					self.noticeCreate( target, response.type, response.message );
+					setTimeout( function () {
+						window.location.reload();
+					}, 2000 );
+				},
+
 			});
 		},
 
