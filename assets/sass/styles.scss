@@ -10,8 +10,14 @@
 		padding: 20px 30px;
 		border-bottom: 1px solid $grey_color_2;
 		position: relative;
+			&.last-child{
+				border-bottom: none;
+			}
 			.tmss-customize-notice-container{
 				position: relative;
+			}
+			.customize-control-description{
+				margin-bottom: 15px;
 			}
 	}
 	.button{
@@ -27,7 +33,7 @@
 }
 .tmss-import-file {
 	width: 100%;
-	margin: 10px 0;
+	margin: 0 0 10px 0;
 	font-size: 12px;
 }
 .tmss-import-images {
@@ -113,5 +119,52 @@
 		.inner-text{
 			color: #e54343;
 		}
+	}
+}
+
+.tmss-presets{
+	&__list{
+		display: flex;
+		flex-flow: row wrap;
+		justify-content: space-between;
+		align-items: flex-start;
+	}
+	&__item{
+		flex: 0 1 48%;
+		align-self: stretch;
+		&:hover{
+			span{
+				color: #298ffc;
+			}
+		}
+	}
+	&__inner{
+		cursor: pointer;
+		margin-bottom: 10px;
+	}
+	&__image{
+		width: 100%;
+		height: auto;
+	}
+	&__label{
+		display: block;
+		text-align: center;
+	}
+}
+
+body{
+	.custom-tooltip-styling{
+		padding: 10px;
+		border-radius: 2px;
+		box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+		background: #fff;
+		max-width: 300px;
+		z-index: 500001;
+			.ui-tooltip-content{
+				img{
+					width: 100%;
+					height: auto;
+				}
+			}
 	}
 }

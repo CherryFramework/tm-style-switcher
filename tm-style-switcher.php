@@ -143,7 +143,6 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 		 * @since 1.0.0
 		 */
 		function includes() {
-			require_once( trailingslashit( TM_STYLE_SWITCHER_DIR ) . 'includes/class-init-export-import.php' );
 			require_once( trailingslashit( TM_STYLE_SWITCHER_DIR ) . 'includes/class-init-style-switcher.php' );
 			require_once( trailingslashit( TM_STYLE_SWITCHER_DIR ) . 'includes/class-register-customize-controls.php' );
 		}
@@ -248,7 +247,7 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 
 			// Register
 			wp_register_style( 'tm-style-swither-css', TM_STYLE_SWITCHER_URI . '/assets/css/styles.css', array(), TM_STYLE_SWITCHER_VERSION );
-			wp_register_script( 'tm-style-swither-js', TM_STYLE_SWITCHER_URI . '/assets/js/tm-style-switcher-script.js', array( 'jquery', 'cherry-js-core' ), TM_STYLE_SWITCHER_VERSION, true );
+			wp_register_script( 'tm-style-swither-js', TM_STYLE_SWITCHER_URI . '/assets/js/tm-style-switcher-script.js', array( 'jquery', 'cherry-js-core', 'jquery-ui-tooltip' ), TM_STYLE_SWITCHER_VERSION, true );
 
 			// Localize
 			wp_localize_script( 'tm-style-swither-js', 'tmssMessages', array(
@@ -338,7 +337,16 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 		 * @since 1.0.0
 		 */
 		public function get_inherit_image() {
-			return trailingslashit( plugin_dir_url( __FILE__ ) ) . '/assets/images/inherit.svg';
+			return trailingslashit( plugin_dir_url( __FILE__ ) ) . '/assets/images/inherit-image.svg';
+		}
+
+		/**
+		 * Get inherit image for preset preview.
+		 *
+		 * @since 1.0.0
+		 */
+		public function get_default_image() {
+			return trailingslashit( plugin_dir_url( __FILE__ ) ) . '/assets/images/default-image.svg';
 		}
 
 		/**
@@ -398,6 +406,19 @@ if ( ! function_exists( 'tm_style_switcher' ) ) {
 	 */
 	function tm_style_switcher() {
 		return Tm_Style_Switcher::get_instance();
+	}
+}
+
+if ( ! function_exists( 'tmss_register_preset' ) ) {
+
+	/**
+	 * Returns instanse of the plugin class.
+	 *
+	 * @since  1.0.0
+	 * @return object
+	 */
+	function tmss_register_preset( $id = '', $label = '', $image_url = '', $json_path = '' ) {
+		return tm_style_switcher()->tmss_register_preset( $id, $label, $image_url, $json_path );
 	}
 }
 

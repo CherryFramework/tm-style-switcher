@@ -11,7 +11,8 @@
 			$( '#customize-theme-controls' ).on( 'click', '.tmss-export-button', this.exportSettings.bind( this ) );
 			$( '#customize-theme-controls' ).on( 'click', '.tmss-import-button', this.ajaxImportSettings.bind( this ) );
 			$( '#customize-theme-controls' ).on( 'click', '.tmss-restore-settings-button', this.ajaxRestoreDefaults.bind( this ) );
-			$( '.tmss-presets-list' ).on( 'click', '.cherry-radio-input ', this.ajaxPresetSwitch.bind( this ) );
+			$( '.tmss-presets' ).on( 'click', '.tmss-presets__item', this.ajaxPresetSwitch.bind( this ) );
+			this.initTooltip();
 		},
 
 		exportSettings: function() {
@@ -25,7 +26,7 @@
 
 		ajaxImportSettings: function() {
 			var self           = this,
-				target         = event.target,
+				$target        = $( event.target ),
 				$input         = $( '.tmss-import-file' ),
 				file           = $input[0].files[0],
 				filePath       = $input.val(),
@@ -49,13 +50,13 @@
 				beforeSend: function( jqXHR ) {
 					if ( !file ) {
 						jqXHR.abort();
-						self.noticeCreate( target, 'error', tmssMessages.emptyImportFile );
+						self.noticeCreate( $target, 'error', tmssMessages.emptyImportFile );
 					} else {
-						self.noticeCreate( target, 'info', tmssMessages.willBeRestored );
+						self.noticeCreate( $target, 'info', tmssMessages.willBeRestored );
 					}
 				},
-				success: function(response){
-					self.noticeCreate( target, response.type, response.message );
+				success: function( response ) {
+					self.noticeCreate( $target, response.type, response.message );
 					setTimeout( function () {
 						window.location.reload();
 					}, 2000 );
@@ -66,7 +67,7 @@
 
 		ajaxRestoreDefaults: function() {
 			var self     = this,
-				target   = event.target,
+				$target  = $( event.target ),
 				nonce    = cherry_ajax,
 				formData = new FormData();
 
@@ -82,7 +83,7 @@
 				processData: false,
 				cache: false,
 				success: function( response ) {
-					self.noticeCreate( target, 'info', tmssMessages.willBeRestored );
+					self.noticeCreate( $target, 'info', tmssMessages.willBeRestored );
 					setTimeout( function () {
 						window.location.reload();
 					}, 2000 );
@@ -90,14 +91,16 @@
 			});
 		},
 
-		ajaxPresetSwitch: function() {
+		ajaxPresetSwitch: function( event ) {
 			var self           = this,
-				target         = event.target,
+				$target        = $( event.currentTarget ),
 				nonce          = cherry_ajax,
+				preset         = $target.data( 'preset' ),
 				formData       = new FormData();
 
-			formData.append( 'action', 'tmss_import_settingss' );
+			formData.append( 'action', 'tmss_preset_applying' );
 			formData.append( 'nonce', nonce );
+			formData.append( 'preset', preset );
 
 			$.ajax({
 				type: 'POST',
@@ -108,15 +111,40 @@
 				processData: false,
 				cache: false,
 				beforeSend: function( jqXHR ) {
-
+					self.noticeCreate( $target, 'info', tmssMessages.willBeRestored );
 				},
-				success: function(response){
-					self.noticeCreate( target, response.type, response.message );
+				success: function( response ){
+					self.noticeCreate( $target, response.type, response.message );
 					setTimeout( function () {
 						window.location.reload();
 					}, 2000 );
 				},
 
+			});
+		},
+
+		initTooltip: function( event ) {
+			$( '.tmss-presets' ).tooltip({
+				items: '.tmss-presets__image:not([data-preset="default_preset"])',
+				tooltipClass: 'custom-tooltip-styling',
+				/*position: {
+					my: "left center",
+					at: "right center"
+				},*/
+				show: {
+					duration: 200,
+					delay: 50
+				},
+				hide: {
+					duration: 100,
+				},
+				content: function() {
+					var $element    = $( this ),
+						imageSource = $element.attr( 'src' ),
+						imageAlt    = $element.attr( 'alt' );
+
+					return '<img src=' + imageSource + ' alt=' + imageAlt + '>';
+				}
 			});
 		},
 
