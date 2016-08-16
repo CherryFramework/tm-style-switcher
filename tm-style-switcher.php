@@ -247,7 +247,7 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 
 			// Register
 			wp_register_style( 'tm-style-swither-css', TM_STYLE_SWITCHER_URI . '/assets/css/styles.css', array(), TM_STYLE_SWITCHER_VERSION );
-			wp_register_script( 'tm-style-swither-js', TM_STYLE_SWITCHER_URI . '/assets/js/tm-style-switcher-script.js', array( 'jquery', 'cherry-js-core', 'jquery-ui-tooltip' ), TM_STYLE_SWITCHER_VERSION, true );
+			wp_register_script( 'tm-style-swither-js', TM_STYLE_SWITCHER_URI . '/assets/js/tm-style-switcher-script.js', array( 'jquery', 'cherry-js-core', 'jquery-ui-tooltip', 'jquery-ui-dialog' ), TM_STYLE_SWITCHER_VERSION, true );
 
 			// Localize
 			wp_localize_script( 'tm-style-swither-js', 'tmssMessages', array(

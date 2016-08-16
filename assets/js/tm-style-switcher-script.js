@@ -3,21 +3,37 @@
 
 	CherryJsCore.utilites.namespace('tm_style_switcher_scripts');
 	CherryJsCore.tm_style_switcher_scripts = {
+
+		confirmDialog: null,
+
 		init: function () {
 			$( document ).on( 'ready', this.constructor.bind( this ) );
 		},
 
 		constructor: function () {
+			this.confirmDialog = $( '#style-switch-confirm' );
+
 			$( '#customize-theme-controls' ).on( 'click', '.tmss-export-button', this.exportSettings.bind( this ) );
 			$( '#customize-theme-controls' ).on( 'click', '.tmss-import-button', this.ajaxImportSettings.bind( this ) );
 			$( '#customize-theme-controls' ).on( 'click', '.tmss-restore-settings-button', this.ajaxRestoreDefaults.bind( this ) );
 			$( '.tmss-presets' ).on( 'click', '.tmss-presets__item', this.ajaxPresetSwitch.bind( this ) );
 			this.initTooltip();
+
+			this.confirmDialog.dialog( {
+				autoOpen: false,
+				resizable: true,
+				modal: true,
+				minWidth: 400,
+				create: function ( event ) {
+					$( event.target ).parent().css( 'position', 'fixed' );
+				}
+			} );
+
 		},
 
 		exportSettings: function() {
-			var self           = this,
-				target         = event.target;
+			var self   = this,
+				target = event.target;
 
 			self.noticeCreate( target, 'info', tmssMessages.downloadStarted );
 
@@ -102,25 +118,42 @@
 			formData.append( 'nonce', nonce );
 			formData.append( 'preset', preset );
 
-			$.ajax({
-				type: 'POST',
-				url: ajaxurl,
-				dataType: 'json',
-				data: formData,
-				contentType: false,
-				processData: false,
-				cache: false,
-				beforeSend: function( jqXHR ) {
-					self.noticeCreate( $target, 'info', tmssMessages.willBeRestored );
-				},
-				success: function( response ){
-					self.noticeCreate( $target, response.type, response.message );
-					setTimeout( function () {
-						window.location.reload();
-					}, 2000 );
-				},
+			self.confirmDialog.dialog( 'option', 'buttons',
+				[
+					{
+						text: 'yes',
+						click: function() {
+							$( this ).dialog( 'close' );
+							$.ajax({
+								type: 'POST',
+								url: ajaxurl,
+								dataType: 'json',
+								data: formData,
+								contentType: false,
+								processData: false,
+								cache: false,
+								beforeSend: function( jqXHR ) {
+									self.noticeCreate( $target, 'info', tmssMessages.willBeRestored );
+								},
+								success: function( response ){
+									self.noticeCreate( $target, response.type, response.message );
+									setTimeout( function () {
+										window.location.reload();
+									}, 2000 );
+								},
+							});
+						}
+					},
+					{
+						text: 'no',
+						click: function() {
+							$( this ).dialog( 'close' );
+						}
+					}
+				]
+			);
 
-			});
+			self.confirmDialog.dialog( 'open' );
 		},
 
 		initTooltip: function( event ) {
@@ -163,7 +196,6 @@
 
 			$noticeContainer.prepend( $noticeInstance );
 
-
 			//$( '.notice-box:nth-child(n + 3)', $noticeContainer ).slideUp( 300, function() {
 
 			/*$( '.notice-box:not(:first-child)', $noticeContainer ).slideUp( 300, function() {
@@ -180,7 +212,15 @@
 				}, 4000 );
 			} );
 
-		} // end noticeCreate
+		}, // end noticeCreate
+
+		isLocalStorageAvailable: function() {
+			try {
+				return 'localStorage' in window && window['localStorage'] !== null;
+			} catch (e) {
+				return false;
+			}
+		}
 
 	}
 

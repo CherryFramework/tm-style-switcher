@@ -64,6 +64,9 @@ if ( class_exists( 'WP_Customize_Control' ) ) {
 					<div class="tmss-customize-notice-container"></div>
 				</div>
 			</div>
+			<div id="style-switch-confirm" class="confirm-message" title="<?php echo esc_html__( 'Are you sure?', 'tm-style-switcher' ); ?>">
+				<p><?php echo esc_html__( 'Unsaved settings will be ignored, page will be refreshed.', 'tm-style-switcher' ) ?></p>
+			</div>
 			<?php
 		}
 	}

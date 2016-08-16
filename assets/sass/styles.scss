@@ -167,4 +167,77 @@ body{
 				}
 			}
 	}
+	.confirm-message{
+		display: none;
+	}
+	.ui-dialog{
+		background-color: #fff;
+		background-image: none;
+		border-radius: 6px;
+		border: none;
+		padding: 0 0 0 0;
+		z-index: 500003;
+			.ui-dialog-titlebar{
+				background: none;
+				border-radius: 6px 6px 0 0;
+				border: none;
+				padding: 14px;
+				font: inherit;
+				color: #fff;
+				font-size: 20px;
+				line-height: 30px;
+				font-weight: 700;
+				text-align: center;
+				background-color: $blue_color;
+					.ui-dialog-titlebar-close{
+						display: none;
+					}
+			}
+			.ui-dialog-content{
+				padding: 40px;
+				color: $grey_color_1;
+				font: inherit;
+				text-align: center;
+					p{
+						margin: 0;
+					}
+			}
+			.ui-dialog-buttonpane{
+				margin: 0;
+				padding: 0 40px 40px 40px;
+				border: none;
+				background: none;
+				.ui-dialog-buttonset{
+					text-align: center;
+					.ui-button{
+						@include button_base();
+						@include button_success();
+						margin-right: 20px;
+						&:last-child{
+							@include button_danger();
+							margin-right: 0px;
+						}
+						&:focus{
+							outline: none;
+						}
+					}
+				}
+			}
+	}
+	.ui-widget-overlay{
+		width: 100%;
+		height: 100%;
+		top: 0;
+		left: 0;
+		background: rgba(255,255,255,0.75);
+		background: -moz-radial-gradient(center, ellipse cover, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0.5) 100%);
+		background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, rgba(255,255,255,0.75)), color-stop(100%, rgba(255,255,255,0.5)));
+		background: -webkit-radial-gradient(center, ellipse cover, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0.5) 100%);
+		background: -o-radial-gradient(center, ellipse cover, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0.5) 100%);
+		background: -ms-radial-gradient(center, ellipse cover, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0.5) 100%);
+		background: radial-gradient(ellipse at center, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0.5) 100%);
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffffff', GradientType=1 );
+		position: absolute;
+		z-index: 500002;
+	}
 }

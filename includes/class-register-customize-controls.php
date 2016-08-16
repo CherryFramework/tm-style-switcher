@@ -87,7 +87,6 @@ if ( ! class_exists( 'TMSS_register_customize_control' ) ) {
 
 			require_once( trailingslashit( TM_STYLE_SWITCHER_DIR ) . 'includes/class-radio-image-control.php' );
 
-
 			$wp_customize->add_control( new TMSS_Radio_Image_Control(
 				$wp_customize,
 				'tm-style-switcher-setting',
