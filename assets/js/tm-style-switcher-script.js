@@ -31,7 +31,7 @@
 
 		},
 
-		exportSettings: function() {
+		exportSettings: function( event ) {
 			var self   = this,
 				target = event.target;
 
@@ -40,7 +40,7 @@
 			window.location.href = tmssConfig.customizerURL + '?tmss-export=' + tmssConfig.exportNonce;
 		},
 
-		ajaxImportSettings: function() {
+		ajaxImportSettings: function( event ) {
 			var self           = this,
 				$target        = $( event.target ),
 				$input         = $( '.tmss-import-file' ),
@@ -81,7 +81,7 @@
 			});
 		},
 
-		ajaxRestoreDefaults: function() {
+		ajaxRestoreDefaults: function( event ) {
 			var self     = this,
 				$target  = $( event.target ),
 				nonce    = cherry_ajax,

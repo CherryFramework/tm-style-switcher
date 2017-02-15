@@ -3,8 +3,8 @@
 Contributors: TemplateMonster 2002
 Tags: export, import, restore mods, wordpress live customizer, style switcher, mods switcher, theme settings switcher, cherry framework
 Requires at least: 4.5
-Tested up to: 4.6.1
-Stable tag: 1.0.0
+Tested up to: 4.7.2
+Stable tag: 1.0.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -30,7 +30,7 @@ Using style presets, you can implement your own skin switcher and apply custom p
 
 == Installation ==
 
-1. Upload "Cherry Popups" folder to the "/wp-content/plugins/" directory
+1. Upload "TM Style Switcher" folder to the "/wp-content/plugins/" directory
 2. Activate the plugin through the "Plugins" menu in WordPress
 
 == Screenshots ==
@@ -40,3 +40,7 @@ Using style presets, you can implement your own skin switcher and apply custom p
 == Changelog ==
 
 = 1.0.0 =
+
+= 1.0.1 =
+
+* fix: firefox js error
