@@ -3,7 +3,7 @@
  * Plugin Name: TM Style Switcher
  * Plugin URI:  http://www.cherryframework.com/
  * Description: Plugin for WordPress.
- * Version:     1.0.1
+ * Version:     1.0.2
  * Author:      CherryTeam
  * Text Domain: tm-style-switcher
  * License:     GPL-3.0+
@@ -12,7 +12,7 @@
  *
  * @package Tm Style Switcher
  * @author  TemplateMonster
- * @version 1.0.1
+ * @version 1.0.2
  * @license GPL-3.0+
  */
 
@@ -99,6 +99,9 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 			// Switch theme
 			add_action( 'after_switch_theme', array( $this, 'switch_theme' ) );
 
+			// Add json mime type support
+			add_filter( 'upload_mimes', array( $this, 'custom_upload_mimes' ) );
+
 		}
 
 		/**
@@ -113,7 +116,7 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 			 *
 			 * @since 1.0.0
 			 */
-			define( 'TM_STYLE_SWITCHER_VERSION', '1.0.1' );
+			define( 'TM_STYLE_SWITCHER_VERSION', '1.0.2' );
 
 			/**
 			 * Set the name of the plugin.
@@ -236,6 +239,19 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 		 */
 		public function enqueue_scripts() {}
 
+		/**
+		 * Add json mime type support.
+		 *
+		 * @return array
+		 */
+		public function custom_upload_mimes( $mime_types ) {
+
+			// add json to the list of mime types
+			$mime_types['json'] = 'text/json';
+
+			// return the array back to the function with our added mime type
+			return $mime_types;
+		}
 
 		/**
 		 * Enqueues scripts for the control.
@@ -312,6 +328,7 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 		 * @return void
 		 */
 		public function tmss_register_preset( $id = '', $label = '', $image_url = '', $json_path = '' ) {
+
 			if ( array_key_exists( $id, $this->preset_list ) ) {
 				return false;
 			}

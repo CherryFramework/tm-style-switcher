@@ -129,6 +129,7 @@ if ( ! class_exists( 'TMSS_init_export_import' ) ) {
 
 			// Setup internal vars.
 			$theme     = get_stylesheet();
+			$parent    = get_template();
 			$overrides = array( 'test_form' => FALSE, 'mimes' => array('json' => 'text/json') );
 			$file      = wp_handle_upload( $_FILES['tmss-import-file'], $overrides );
 
@@ -179,7 +180,7 @@ if ( ! class_exists( 'TMSS_init_export_import' ) ) {
 				);
 			}
 
-			if ( $data['theme'] != $theme ) {
+			if ( $data['theme'] !== $theme && $data['theme'] !== $parent ) {
 				wp_send_json(
 					array(
 						'type'    => 'error',
@@ -400,6 +401,7 @@ if ( ! class_exists( 'TMSS_init_export_import' ) ) {
 				require_once( ABSPATH . 'wp-admin/includes/file.php' );
 				require_once( ABSPATH . 'wp-admin/includes/image.php' );
 			}
+
 			if ( ! empty( $file ) ) {
 
 				// Set variables for storage, fix file filename for query strings.
@@ -421,16 +423,17 @@ if ( ! class_exists( 'TMSS_init_export_import' ) ) {
 				// If error storing permanently, unlink.
 				if ( is_wp_error( $id ) ) {
 					@unlink( $file_array['tmp_name'] );
+
 					return $id;
 				}
 
 				// Build the object to return.
-				$meta					= wp_get_attachment_metadata( $id );
-				$data->attachment_id	= $id;
-				$data->url				= wp_get_attachment_url( $id );
-				$data->thumbnail_url	= wp_get_attachment_thumb_url( $id );
-				$data->height			= $meta['height'];
-				$data->width			= $meta['width'];
+				$meta                = wp_get_attachment_metadata( $id );
+				$data->attachment_id = $id;
+				$data->url           = wp_get_attachment_url( $id );
+				$data->thumbnail_url = wp_get_attachment_thumb_url( $id );
+				$data->height        = $meta['height'];
+				$data->width         = $meta['width'];
 			}
 
 			return $data;
@@ -445,6 +448,7 @@ if ( ! class_exists( 'TMSS_init_export_import' ) ) {
 		 * @return bool Whether the string is an image url or not.
 		 */
 		public function is_image_url( $string = '' ) {
+
 			if ( is_string( $string ) ) {
 
 				if ( preg_match( '/\.(jpg|jpeg|png|gif)/i', $string ) ) {

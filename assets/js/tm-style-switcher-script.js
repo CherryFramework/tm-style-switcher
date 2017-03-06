@@ -74,7 +74,7 @@
 				success: function( response ) {
 					self.noticeCreate( $target, response.type, response.message );
 					setTimeout( function () {
-						window.location.reload();
+						//window.location.reload();
 					}, 2000 );
 				},
 
