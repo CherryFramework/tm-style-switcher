@@ -72,10 +72,10 @@ if ( ! class_exists( 'TMSS_init_export_import' ) ) {
 				return;
 			}
 
-			$theme		= get_stylesheet();
-			$charset	= get_option( 'blog_charset' );
-			$mods		= get_theme_mods();
-			$data		= array(
+			$theme   = get_stylesheet();
+			$charset = get_option( 'blog_charset' );
+			$mods    = get_theme_mods();
+			$data    = array(
 				'theme' => $theme,
 				'mods'  => $mods ? $mods : array(),
 			);

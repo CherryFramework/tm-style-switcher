@@ -99,9 +99,6 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 			// Switch theme
 			add_action( 'after_switch_theme', array( $this, 'switch_theme' ) );
 
-			// Add json mime type support
-			add_filter( 'upload_mimes', array( $this, 'custom_upload_mimes' ) );
-
 		}
 
 		/**
@@ -238,20 +235,6 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 		 * @since 1.0.0
 		 */
 		public function enqueue_scripts() {}
-
-		/**
-		 * Add json mime type support.
-		 *
-		 * @return array
-		 */
-		public function custom_upload_mimes( $mime_types ) {
-
-			// add json to the list of mime types
-			$mime_types['json'] = 'text/json';
-
-			// return the array back to the function with our added mime type
-			return $mime_types;
-		}
 
 		/**
 		 * Enqueues scripts for the control.
