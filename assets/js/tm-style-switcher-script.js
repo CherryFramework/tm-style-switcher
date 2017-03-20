@@ -24,9 +24,6 @@
 				resizable: true,
 				modal: true,
 				minWidth: 400,
-				classes: {
-					'ui-dialog': 'ui-corner-all'
-				},
 				create: function ( event ) {
 					$( event.target ).parent().css( 'position', 'fixed' );
 				}
