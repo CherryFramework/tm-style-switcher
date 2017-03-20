@@ -3,8 +3,8 @@
 Contributors: TemplateMonster 2002
 Tags: export, import, restore mods, wordpress live customizer, style switcher, mods switcher, theme settings switcher, cherry framework
 Requires at least: 4.5
-Tested up to: 4.7.2
-Stable tag: 1.0.2
+Tested up to: 4.7.3
+Stable tag: 1.0.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -48,3 +48,8 @@ Using style presets, you can implement your own skin switcher and apply custom p
 = 1.0.2 =
 
 * upd: possibility to import parent theme mods into a child theme
+
+= 1.0.3 =
+
+* upd: dialog ui-button styles
+* add: pot file
