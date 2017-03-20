@@ -24,6 +24,9 @@
 				resizable: true,
 				modal: true,
 				minWidth: 400,
+				classes: {
+					'ui-dialog': 'ui-corner-all'
+				},
 				create: function ( event ) {
 					$( event.target ).parent().css( 'position', 'fixed' );
 				}
@@ -122,6 +125,7 @@
 				[
 					{
 						text: 'yes',
+						classes: 'ui-sdsd',
 						click: function() {
 							$( this ).dialog( 'close' );
 							$.ajax({

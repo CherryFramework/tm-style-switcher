@@ -3,7 +3,7 @@
  * Plugin Name: TM Style Switcher
  * Plugin URI:  http://www.cherryframework.com/
  * Description: Plugin for WordPress.
- * Version:     1.0.2
+ * Version:     1.0.3
  * Author:      CherryTeam
  * Text Domain: tm-style-switcher
  * License:     GPL-3.0+
@@ -113,7 +113,7 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 			 *
 			 * @since 1.0.0
 			 */
-			define( 'TM_STYLE_SWITCHER_VERSION', '1.0.2' );
+			define( 'TM_STYLE_SWITCHER_VERSION', '1.0.3' );
 
 			/**
 			 * Set the name of the plugin.
@@ -245,8 +245,8 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 		public function controls_enqueue_scripts() {
 
 			// Register
-			wp_register_style( 'tm-style-swither-css', TM_STYLE_SWITCHER_URI . '/assets/css/styles.css', array(), TM_STYLE_SWITCHER_VERSION );
-			wp_register_script( 'tm-style-swither-js', TM_STYLE_SWITCHER_URI . '/assets/js/tm-style-switcher-script.js', array( 'jquery', 'cherry-js-core', 'jquery-ui-tooltip', 'jquery-ui-dialog' ), TM_STYLE_SWITCHER_VERSION, true );
+			wp_register_style( 'tm-style-swither-css', TM_STYLE_SWITCHER_URI . 'assets/css/min/styles.min.css', array(), TM_STYLE_SWITCHER_VERSION );
+			wp_register_script( 'tm-style-swither-js', TM_STYLE_SWITCHER_URI . 'assets/js/min/tm-style-switcher-script.min.js', array( 'jquery', 'cherry-js-core', 'jquery-ui-tooltip', 'jquery-ui-dialog' ), TM_STYLE_SWITCHER_VERSION, true );
 
 			// Localize
 			wp_localize_script( 'tm-style-swither-js', 'tmssMessages', array(
