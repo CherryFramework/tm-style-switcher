@@ -3,7 +3,7 @@
  * Plugin Name: TM Style Switcher
  * Plugin URI:  http://www.cherryframework.com/
  * Description: Plugin for WordPress.
- * Version:     1.0.3
+ * Version:     1.0.4
  * Author:      CherryTeam
  * Text Domain: tm-style-switcher
  * License:     GPL-3.0+
@@ -12,7 +12,7 @@
  *
  * @package Tm Style Switcher
  * @author  TemplateMonster
- * @version 1.0.2
+ * @version 1.0.4
  * @license GPL-3.0+
  */
 
@@ -113,7 +113,7 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 			 *
 			 * @since 1.0.0
 			 */
-			define( 'TM_STYLE_SWITCHER_VERSION', '1.0.3' );
+			define( 'TM_STYLE_SWITCHER_VERSION', '1.0.4' );
 
 			/**
 			 * Set the name of the plugin.

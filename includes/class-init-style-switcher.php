@@ -293,6 +293,7 @@ if ( ! class_exists( 'TMSS_init_export_import' ) ) {
 
 			$preset_id = $_POST[ 'preset' ];
 			$theme = get_stylesheet();
+			$parent = get_template();
 
 			if ( 'default_preset' !== $preset_id ) {
 				$file_name = tm_style_switcher()->preset_list[ $preset_id ]['json_path'];
@@ -324,7 +325,7 @@ if ( ! class_exists( 'TMSS_init_export_import' ) ) {
 				);
 			}
 
-			if ( $data['theme'] !== $theme ) {
+			if ( $data['theme'] !== $theme && $data['theme'] !== $parent ) {
 				wp_send_json(
 					array(
 						'type'    => 'error',
