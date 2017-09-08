@@ -57,3 +57,7 @@ Using style presets, you can implement your own skin switcher and apply custom p
 = 1.0.4 =
 
 * upd: possibility to import parent theme presets into a child theme
+
+= 1.0.5 =
+
+* Fixed bugs
