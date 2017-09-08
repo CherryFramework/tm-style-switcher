@@ -1,10 +1,11 @@
 <?php
 /**
  * Plugin Name: TM Style Switcher
- * Plugin URI:  http://www.cherryframework.com/
+ * Plugin URI:  https://wordpress.org/plugins/tm-style-switcher/
  * Description: Plugin for WordPress.
- * Version:     1.0.4
- * Author:      CherryTeam
+ * Version:     1.0.5
+ * Author:      Jetimpex
+ * Author URI:  https://jetimpex.com/wordpress/
  * Text Domain: tm-style-switcher
  * License:     GPL-3.0+
  * License URI: http://www.gnu.org/licenses/gpl-3.0.txt
@@ -12,7 +13,7 @@
  *
  * @package Tm Style Switcher
  * @author  TemplateMonster
- * @version 1.0.4
+ * @version 1.0.5
  * @license GPL-3.0+
  */
 
@@ -113,7 +114,7 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 			 *
 			 * @since 1.0.0
 			 */
-			define( 'TM_STYLE_SWITCHER_VERSION', '1.0.4' );
+			define( 'TM_STYLE_SWITCHER_VERSION', '1.0.5' );
 
 			/**
 			 * Set the name of the plugin.
