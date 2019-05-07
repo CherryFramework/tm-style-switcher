@@ -3,7 +3,7 @@
  * Plugin Name: TM Style Switcher
  * Plugin URI:  https://wordpress.org/plugins/tm-style-switcher/
  * Description: Plugin for WordPress.
- * Version:     1.0.5
+ * Version:     1.0.6
  * Author:      Jetimpex
  * Author URI:  https://jetimpex.com/wordpress/
  * Text Domain: tm-style-switcher
@@ -114,7 +114,7 @@ if ( ! class_exists( 'Tm_Style_Switcher' ) ) {
 			 *
 			 * @since 1.0.0
 			 */
-			define( 'TM_STYLE_SWITCHER_VERSION', '1.0.5' );
+			define( 'TM_STYLE_SWITCHER_VERSION', '1.0.6' );
 
 			/**
 			 * Set the name of the plugin.
